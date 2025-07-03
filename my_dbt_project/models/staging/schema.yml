@@ -1,0 +1,32 @@
+version: 2
+
+sources:
+  - name: raw
+    tables:
+      - name: customers
+      - name: orders
+
+models:
+  - name: stg_customers
+    description: "Clientes limpiados desde la tabla raw"
+    columns:
+      - name: customer_id
+        description: "ID del cliente"
+      - name: name
+        description: "Nombre del cliente"
+      - name: email
+        description: "Correo electrónico"
+      - name: signup_date
+        description: "Fecha de registro del cliente"
+  
+  - name: stg_orders
+    description: "Pedidos estandarizados desde la tabla raw"
+    columns:
+      - name: order_id
+        description: "ID del pedido"
+      - name: customer_id
+        description: "ID del cliente"
+      - name: order_date
+        description: "Fecha del pedido"
+      - name: amount
+        description: "Importe total"
