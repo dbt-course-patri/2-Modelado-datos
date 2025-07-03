@@ -1,2 +1,5 @@
 env_dbt
 logs
+target/
+dbt_packages/
+logs/
