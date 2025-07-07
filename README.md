@@ -279,3 +279,40 @@ Puedes conectarte a tu base de datos PostgreSQL con pgAdmin, DBeaver o psql y ej
     dbt docs serve
     ```
 
+
+<hr>
+<a name='schema5'></a>
+
+## 5 Ejercicio: Modelo incremental
+- Toma un modelo como `fct_orders`.
+    - `materialized='incremental'`: lo convierte en modelo incremental.
+
+
+
+- Cámbialo a incremental con `unique_key='order_id'`.
+    - unique_key='order_id': identifica de forma única cada fila.
+
+- Añade condición `WHERE con is_incremental()` para evitar re-procesar todo.
+    - is_incremental(): permite añadir lógica que solo se ejecute cuando se agregan nuevos datos.
+
+    - La condición order_date > max(order_date) evita reinsertar datos ya procesados.
+- Ejecuta con datos nuevos y valida que solo se añaden filas nuevas.
+```bash
+dbt run --select fct_orders
+```
+
+- Inserta datos nuevos en la fuente `int_orders_enriched`
+    - Hacer `INSERT` en la fuente original (`raw.orders` o `raw.customers`)
+    - Si `int_orders_enriched` se construye desde stg_orders, y ese a su vez desde raw.orders, entonces lo correcto es:
+
+    ```sql
+    INSERT INTO raw.orders (order_id, customer_id, order_date, amount)
+    VALUES
+    (1005, 2, '2025-06-25', 200.00),
+    (1006, 3, '2025-06-26', 300.00);
+    ```
+    - Luego simplemente ejecutas:
+
+    ```bash
+    dbt run --select stg_orders int_orders_enriched fct_orders
+    ```
